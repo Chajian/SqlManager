@@ -10,7 +10,7 @@ public class MySqlDriver extends BaseSqlDriver {
 
     private int version;
 
-    public MySqlDriver(String user,String pass,String db,String ip,int version) throws ClassNotFoundException {
+    public MySqlDriver(String user,String pass,String ip,String port,int version) throws ClassNotFoundException {
         //版本兼容
         if(version<=5) {
             setDriverClass("com.mysql.jdbc.Driver");
@@ -23,7 +23,7 @@ public class MySqlDriver extends BaseSqlDriver {
         setUser(user);
         setPass(pass);
         setVersion(version);
-            setUrl("jdbc:mysql://" + ip + ":3306/" + db);
+            setUrl("jdbc:mysql://" + ip + ":"+port+"/");
 
         Class.forName(driverClass);
     }

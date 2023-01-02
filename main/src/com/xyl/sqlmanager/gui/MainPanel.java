@@ -30,20 +30,20 @@ public class MainPanel extends JFrame implements TreeSelectionListener {
         try {
             if (path == null)
                 return;
-            if (path.getPathCount() == 2) {//点击数据库
+            if (path.getPathCount() == 2) {//点击数据库更新JTree组件ui
                 DefaultMutableTreeNode treePath = (DefaultMutableTreeNode) path.getPath()[1];
                 seletedDb = treePath.getUserObject().toString();
                 mySqlDriver.useDataBase(connection, seletedDb);
             }
-            if (path.getPathCount() == 3) {//点击表单
+            if (path.getPathCount() == 3) {//点击表单更新JTableUI
                 myMouseListener.setEnable(true);//开启表格监听
-                insert.setEnabled(true);
-                delete.setEnabled(true);
+                insert.setEnabled(true);//启用插入功能
+                delete.setEnabled(true);//启用删除功能
                 DefaultMutableTreeNode treePath = (DefaultMutableTreeNode) path.getPath()[2];
                 seletedTable = treePath.getUserObject().toString();
                 List<String> columns = mySqlDriver.showTableColumnNames(connection,seletedTable);
                 List<Map<String,String>> lists = mySqlDriver.select(connection,seletedTable,null,columns);
-                //更新表格
+                //更新表格UI
                 TableHandler.updateTableColumn(table,tableModel,columns,lists);
             }
         }

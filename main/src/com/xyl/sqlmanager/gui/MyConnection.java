@@ -6,6 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
+import java.awt.im.InputContext;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
 
 /**
@@ -22,7 +25,7 @@ public class MyConnection extends JFrame {
 
 
 
-    public MyConnection() throws HeadlessException {
+    public MyConnection(){
         super("数据库连接工具");
         setLayout(new GridLayout(3,1));
 
@@ -66,7 +69,7 @@ public class MyConnection extends JFrame {
                 }
 
                 try {
-                    mySqlDriver = new MySqlDriver(strUser,strPass,"",strIp,version);
+                    mySqlDriver = new MySqlDriver(strUser,strPass,strIp,strPort,version);
                     if(mySqlDriver.getConnection()!=null)
                     {
                         JOptionPane.showMessageDialog(null,"连接成功");
@@ -89,11 +92,12 @@ public class MyConnection extends JFrame {
         panel2.add(login);
         panel2.add(exit);
 
-
         add(panel);
         add(panel1);
         add(panel2);
 
+
+        Charset utf8Charset = Charset.forName("UTF-8");
         Font font = new Font("宋体", Font.PLAIN, 12);
         setFont(font);
         setVisible(true);
@@ -101,6 +105,12 @@ public class MyConnection extends JFrame {
     }
 
     public static void main(String[] args) {
-        new MyConnection();
+        try {
+            new MyConnection();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
+
 }

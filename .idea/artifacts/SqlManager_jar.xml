@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact name="SqlManager:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/SqlManager_jar</output-path>
+    <root id="root">
+      <element id="archive" name="SqlManager.jar">
+        <element id="module-output" name="SqlManager" />
+      </element>
+      <element id="library" level="project" name="Maven: mysql:mysql-connector-java:8.0.23" />
+      <element id="library" level="project" name="Maven: com.google.protobuf:protobuf-java:3.11.4" />
+    </root>
+  </artifact>
+</component>
