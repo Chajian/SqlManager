@@ -1,35 +1,42 @@
 package com.xyl.sqlmanager.gui;
 
+import com.xyl.sqlmanager.DBFileFilter;
 import com.xyl.sqlmanager.MySqlDriver;
+import com.xyl.sqlmanager.SqliteDriver;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import java.awt.im.InputContext;
+import java.io.File;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 /**
  * 连接数据库UI
  */
 public class MyConnection extends JFrame {
 
+    public static boolean isEnableTimes = false;
+
     JTextField ip,port,user;
     JPasswordField pass;
     ButtonGroup cg = new ButtonGroup();
     ButtonGroup choice = new ButtonGroup();
-    JButton login,exit;
+    JButton login,exit,openSqliteFile;
     JRadioButton version5,version8;
     MySqlDriver mySqlDriver;
     Panel mysqlPanel,sqlitePanel,choosePanel,mysqlVersionPanel,connectionPanel;
-
+    File sqliteFile = null;
 
 
     public MyConnection(){
         super("数据库连接工具");
-        setLayout(new GridLayout(4,1));
+        setLayout(new GridLayout(5,1));
 
         //选择sql数据库
         choosePanel = new Panel();
@@ -86,25 +93,35 @@ public class MyConnection extends JFrame {
         login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String strUser = user.getText().toString();
-                String strPass = pass.getText().toString();
-                String strIp = ip.getText().toString();
-                String strPort = port.getText().toString();
-                int version = 8;
-                if(version5.isSelected()){
-                    version = 5;
-                }
-
-                try {
-                    mySqlDriver = new MySqlDriver(strUser,strPass,strIp,strPort,version);
-                    if(mySqlDriver.getConnection()!=null)
-                    {
-                        JOptionPane.showMessageDialog(null,"连接成功");
-                        new MainPanel(mySqlDriver);
-                        dispose();
+                if(mysql.isSelected()) {
+                    String strUser = user.getText().toString();
+                    String strPass = pass.getText().toString();
+                    String strIp = ip.getText().toString();
+                    String strPort = port.getText().toString();
+                    int version = 8;
+                    if (version5.isSelected()) {
+                        version = 5;
                     }
-                } catch (ClassNotFoundException | SQLException ex) {
-                    ex.printStackTrace();
+
+                    try {
+                        mySqlDriver = new MySqlDriver(strUser, strPass, strIp, strPort, version);
+                        if (mySqlDriver.getConnection() != null) {
+                            JOptionPane.showMessageDialog(null, "连接成功");
+                            new MainPanel(mySqlDriver);
+                            dispose();
+                        }
+                    } catch (ClassNotFoundException | SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                else if(sqlite.isSelected()){
+                    try {
+                        SqliteDriver sqliteDriver = new SqliteDriver(sqliteFile);
+                        new MainPanel(sqliteDriver);
+                        dispose();
+                    } catch (ClassNotFoundException | SQLException ex) {
+                        ex.printStackTrace();
+                    }
                 }
 
             }
@@ -122,31 +139,31 @@ public class MyConnection extends JFrame {
 
         sqlitePanel = new Panel();
         //sqlite
-        JButton openSqliteFile = new JButton("选择sqlite文件");
+        openSqliteFile = new JButton("选择sqlite文件");
         openSqliteFile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                JFileChooser jfilechooser = new JFileChooser();
-//                int returnVal = jfilechooser.showOpenDialog(null);
-//                if (returnVal == JFileChooser.APPROVE_OPTION) {
-//                    textField.setText(jfilechooser.getSelectedFile().getAbsolutePath());
-//                    openFile();
-//                }
+                JFileChooser jfilechooser = new JFileChooser();
+                FileFilter filter = new DBFileFilter();
+                jfilechooser.setFileFilter(filter);
+                int returnVal = jfilechooser.showOpenDialog(null);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    sqliteFile = jfilechooser.getSelectedFile();
+                }
             }
         });
+        sqlitePanel.add(new JLabel("选择Sqlite的db文件"));
         sqlitePanel.add(openSqliteFile);
+        sqlitePanel.setVisible(true);
 
         //选择版本
         add(choosePanel);
-
-        //默认mysql
         add(mysqlPanel);
         add(mysqlVersionPanel);
-
-
-        //连接
+        add(sqlitePanel);
         add(connectionPanel);
 
+        switchMysql();
 
         Charset utf8Charset = Charset.forName("UTF-8");
         Font font = new Font("宋体", Font.PLAIN, 12);
@@ -156,8 +173,28 @@ public class MyConnection extends JFrame {
     }
 
     public static void main(String[] args) {
+        // 获取GraphicsEnvironment对象
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+
+        Arrays.stream(ge.getAvailableFontFamilyNames())
+                .forEach(
+                        e->{
+                            if(e.equals("Times")){//判断是否加载字体
+                                isEnableTimes = true;
+                            }
+                    }
+                );
+
+
         try {
+            if(!isEnableTimes){
+                // 加载“java”字体
+                Font font = new Font(Font.DIALOG, Font.PLAIN, 12);
+                // 注册“java”字体
+                ge.registerFont(font);
+            }
             new MyConnection();
+
         }
         catch (Exception e){
             e.printStackTrace();
@@ -165,15 +202,19 @@ public class MyConnection extends JFrame {
     }
 
     public void switchSqlite(){
-        this.remove(mysqlPanel);
-        this.remove(mysqlVersionPanel);
-        this.add(sqlitePanel);
+        mysqlPanel.setVisible(false);
+        mysqlVersionPanel.setVisible(false);
+//        connectionPanel.setVisible(false);
+        sqlitePanel.setVisible(true);
+//        connectionPanel.setVisible(true);
     }
 
     public void switchMysql(){
-        this.remove(sqlitePanel);
-        this.add(mysqlPanel);
-        this.add(mysqlVersionPanel);
+        sqlitePanel.setVisible(false);
+//        connectionPanel.setVisible(false);
+        mysqlPanel.setVisible(true);
+        mysqlVersionPanel.setVisible(true);
+//        connectionPanel.setVisible(true);
     }
 
 }

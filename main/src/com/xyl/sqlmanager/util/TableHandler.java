@@ -8,6 +8,7 @@ import java.util.*;
  * 表格处理
  */
 public class TableHandler {
+    public static int on = 0;
 
 
     /**
@@ -27,7 +28,8 @@ public class TableHandler {
     public static void updateTableColumn(JTable table, DefaultTableModel model, List<Map<String,String>> data){
         if(data.size()>0) {
             String[] data0 = data.get(0).keySet().toArray(new String[]{});
-            List<String> columns = List.of(data0);
+
+            List<String> columns = Arrays.asList(data0);
 
             Object[][] datas = toDoubleDimension(columns, data);
             model.setDataVector(datas, columns.toArray());
@@ -45,17 +47,15 @@ public class TableHandler {
     public static Object[][] toDoubleDimension(List<String> columns,List<Map<String,String>> data){
         Object[][] datas = new Object[data.size()][columns.size()];
 
-        var ref = new Object() {
-            int on = 0;
-        };
+        on = 0;
         data.stream()
                 .forEach(e1->{
                     Object[] row = new Object[columns.size()];
                     for(int i = 0 ;i < columns.size() ;i++){
                         row[i] = e1.get(columns.get(i));
                     }
-                    datas[ref.on] = row;
-                    ref.on+=1;
+                    datas[on] = row;
+                    on+=1;
                 });
         return datas;
     }

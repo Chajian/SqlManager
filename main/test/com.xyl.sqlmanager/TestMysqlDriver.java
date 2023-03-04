@@ -78,7 +78,7 @@ public class TestMysqlDriver {
         where.put("id","79");
         Connection connection = mySqlDriver.getConnection();
         mySqlDriver.useDataBase(connection,"Chat");
-        mySqlDriver.update(connection,"message",values,where,List.of(true));
+        mySqlDriver.update(connection,"message",values,where,Arrays.asList(true));
     }
 
 

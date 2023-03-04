@@ -2,6 +2,7 @@ package com.xyl.sqlmanager.util;
 
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,7 @@ public class TestSqlStringUtil {
         Map<String,String> map = new HashMap<>();
         map.put("id","234");
         map.put("name","jsdkfj");
-        System.out.println(SqlStringUtil.toAndWhere(map,List.of(false,true)));
+        System.out.println(SqlStringUtil.toAndWhere(map, Arrays.asList(false,true)));
     }
 
     @Test
@@ -27,7 +28,7 @@ public class TestSqlStringUtil {
     @Test
     public void testToColumn(){
 
-        System.out.println(SqlStringUtil.toColumn(List.of("file","filename","fileId")));
+        System.out.println(SqlStringUtil.toColumn(Arrays.asList("file","filename","fileId")));
     }
 
 }

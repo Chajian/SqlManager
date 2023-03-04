@@ -1,5 +1,6 @@
 package com.xyl.sqlmanager.gui;
 
+import com.xyl.sqlmanager.BaseSqlDriver;
 import com.xyl.sqlmanager.MySqlDriver;
 import com.xyl.sqlmanager.util.TableHandler;
 
@@ -62,7 +63,7 @@ public class MainPanel extends JFrame implements TreeSelectionListener {
     JTable table;
     DefaultTableModel tableModel;
     JScrollPane spTable;
-    MySqlDriver mySqlDriver;
+    BaseSqlDriver mySqlDriver;
     Connection connection;
     MyMouseListener myMouseListener;
 
@@ -75,7 +76,7 @@ public class MainPanel extends JFrame implements TreeSelectionListener {
     JButton send;
 
 
-    public MainPanel(MySqlDriver mySqlDriver) throws HeadlessException, SQLException {
+    public MainPanel(BaseSqlDriver mySqlDriver) throws HeadlessException, SQLException {
         // 创建根节点
         super("数据库");
         setLayout(new BorderLayout());
@@ -124,6 +125,7 @@ public class MainPanel extends JFrame implements TreeSelectionListener {
         operate = new JMenu("操作");
         insert = new JMenuItem("插入");
         delete = new JMenuItem("删除");
+
         delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
