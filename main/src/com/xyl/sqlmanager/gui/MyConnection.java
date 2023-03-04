@@ -19,43 +19,70 @@ public class MyConnection extends JFrame {
     JTextField ip,port,user;
     JPasswordField pass;
     ButtonGroup cg = new ButtonGroup();
+    ButtonGroup choice = new ButtonGroup();
     JButton login,exit;
     JRadioButton version5,version8;
     MySqlDriver mySqlDriver;
+    Panel mysqlPanel,sqlitePanel,choosePanel,mysqlVersionPanel,connectionPanel;
 
 
 
     public MyConnection(){
         super("数据库连接工具");
-        setLayout(new GridLayout(3,1));
+        setLayout(new GridLayout(4,1));
 
-        Panel panel = new Panel();
+        //选择sql数据库
+        choosePanel = new Panel();
+        JLabel choonseTitle = new JLabel("数据库类型");
+        JRadioButton mysql = new JRadioButton("MYSQL",true);
+        JRadioButton sqlite = new JRadioButton("SQLITE",false);
+        sqlite.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switchSqlite();
+            }
+        });
+        mysql.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                switchMysql();
+            }
+        });
+
+        choice.add(mysql);
+        choice.add(sqlite);
+        choosePanel.add(choonseTitle);
+        choosePanel.add(mysql);
+        choosePanel.add(sqlite);
+
+        //mysql
+        mysqlPanel = new Panel();
         ip = new JTextField("localhost",30);
         port = new JTextField(30);
         user = new JTextField("root",30);
         pass = new JPasswordField("123456789",30);
-        panel.add(new JLabel("IP"));
-        panel.add(ip);
-        panel.add(new JLabel("端口"));
-        panel.add(port);
-        panel.add(new JLabel("用户名"));
-        panel.add(user);
-        panel.add(new JLabel("密码"));
-        panel.add(pass);
-        panel.setLayout(new GridLayout(4,2));
-        panel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        mysqlPanel.add(new JLabel("IP"));
+        mysqlPanel.add(ip);
+        mysqlPanel.add(new JLabel("端口"));
+        mysqlPanel.add(port);
+        mysqlPanel.add(new JLabel("用户名"));
+        mysqlPanel.add(user);
+        mysqlPanel.add(new JLabel("密码"));
+        mysqlPanel.add(pass);
+        mysqlPanel.setLayout(new GridLayout(4,2));
+        mysqlPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 
-        Panel panel1 = new Panel();
+        mysqlVersionPanel = new Panel();
 
         version5 = new JRadioButton("MYSQL5.x",false);
         version8 = new JRadioButton("MYSQL8.x",true);
         cg.add(version5);
         cg.add(version8);
-        panel1.add(version5);
-        panel1.add(version8);
+        mysqlVersionPanel.add(version5);
+        mysqlVersionPanel.add(version8);
 
-        Panel panel2 = new Panel();
-        login = new JButton("登录");
+        connectionPanel = new Panel();
+        login = new JButton("连接");
         login.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -87,14 +114,38 @@ public class MyConnection extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
+                System.exit(0);
             }
         });
-        panel2.add(login);
-        panel2.add(exit);
+        connectionPanel.add(login);
+        connectionPanel.add(exit);
 
-        add(panel);
-        add(panel1);
-        add(panel2);
+        sqlitePanel = new Panel();
+        //sqlite
+        JButton openSqliteFile = new JButton("选择sqlite文件");
+        openSqliteFile.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+//                JFileChooser jfilechooser = new JFileChooser();
+//                int returnVal = jfilechooser.showOpenDialog(null);
+//                if (returnVal == JFileChooser.APPROVE_OPTION) {
+//                    textField.setText(jfilechooser.getSelectedFile().getAbsolutePath());
+//                    openFile();
+//                }
+            }
+        });
+        sqlitePanel.add(openSqliteFile);
+
+        //选择版本
+        add(choosePanel);
+
+        //默认mysql
+        add(mysqlPanel);
+        add(mysqlVersionPanel);
+
+
+        //连接
+        add(connectionPanel);
 
 
         Charset utf8Charset = Charset.forName("UTF-8");
@@ -111,6 +162,18 @@ public class MyConnection extends JFrame {
         catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void switchSqlite(){
+        this.remove(mysqlPanel);
+        this.remove(mysqlVersionPanel);
+        this.add(sqlitePanel);
+    }
+
+    public void switchMysql(){
+        this.remove(sqlitePanel);
+        this.add(mysqlPanel);
+        this.add(mysqlVersionPanel);
     }
 
 }
