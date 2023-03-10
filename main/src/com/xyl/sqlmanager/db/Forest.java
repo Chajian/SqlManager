@@ -76,6 +76,38 @@ public class Forest {
         return null;
     }
 
+    /**
+     * 搜索森林
+     * @param node
+     * @param value 森林名
+     * @return
+     */
+    public Node searchForest(Node node,String value){
+        if(node.getValue().equals(value)){
+            return node;
+        }
+        else if(node.getRight()!=null){
+            return searchDRL(node.getRight(),value);
+        }
+        return null;
+    }
+
+    /**
+     * 搜索树
+     * @param node 森林
+     * @param value 树名
+     * @return
+     */
+    public Node searchTree(Node node,String value){
+        if(node.getValue().equals(value)){
+            return node;
+        }
+        else if(node.getLeft()!=null){
+            return searchDRL(node.getLeft(),value);
+        }
+        return null;
+    }
+
     public Node left(Node node){
         return node.getLeft();
     }
