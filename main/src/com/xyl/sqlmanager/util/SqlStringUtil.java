@@ -64,10 +64,6 @@ public class SqlStringUtil {
         on.set(0);
         where.keySet().stream()
                 .filter(e->{
-//                    boolean isNull = where.get(e.toString())==null;
-//                    if(isNull)
-//                        andOr.remove(on.get());
-//                    on.set(on.get()+1);
                     return where.get(e.toString())!=null;
                 })//过滤空
                 .map(e->{

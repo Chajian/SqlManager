@@ -51,9 +51,9 @@ public class MySqlDriver extends BaseSqlDriver {
             sql = "SELECT "+SqlStringUtil.toColumn(columns)+" FROM "+tableName;
         else
             sql = "SELECT * FROM "+tableName;
+        //多页查询
+        sql += " LIMIT 0, 100";
         Statement statement = connection.createStatement();
-
-
         if(statement.execute(sql)){
             ResultSet resultSet = statement.getResultSet();
             while(resultSet.next()){
@@ -64,8 +64,6 @@ public class MySqlDriver extends BaseSqlDriver {
                 map.add(item);
             }
         }
-
-
         return map;
     }
 

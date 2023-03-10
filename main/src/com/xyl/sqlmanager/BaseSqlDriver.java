@@ -158,8 +158,6 @@ public class BaseSqlDriver implements SqlDriver {
         else
             sql = "SELECT * FROM "+tableName;
         Statement statement = connection.createStatement();
-
-
         if(statement.execute(sql)){
             ResultSet resultSet = statement.getResultSet();
             while(resultSet.next()){
@@ -170,8 +168,6 @@ public class BaseSqlDriver implements SqlDriver {
                 map.add(item);
             }
         }
-
-
         return map;
     }
 
