@@ -62,16 +62,6 @@ public class MySqlDriver extends BaseSqlDriver {
                     item.put(columns.get(i),resultSet.getString(columns.get(i)));
                 }
                 map.add(item);
-//                Map<String,String> item = new TreeMap<String, String>();
-//                columns.stream()
-//                        .forEach(e->{
-//                            try {
-//                                item.put(e.toString(),resultSet.getString(e.toString()));
-//                            } catch (SQLException ex) {
-//                                ex.printStackTrace();
-//                            }
-//                        });
-//                map.add(item);
             }
         }
 
@@ -89,19 +79,7 @@ public class MySqlDriver extends BaseSqlDriver {
      */
     public boolean delete(Connection connection, String tableName,Map<String,String> where,List<Boolean> andOr) throws SQLException {
         Statement statement = connection.createStatement();
-//        AtomicReference<String> sql = new AtomicReference<>("DELETE FROM " + tableName + " WHERE");
         String strSql = "DELETE FROM " + tableName + " WHERE"+SqlStringUtil.toAndWhereNotNull(where,andOr );
-        //提取Sql指令
-//        where.keySet().stream()
-//                .map(e->{
-//                    return " "+e.toString()+" = "+where.get(e.toString());
-//                })
-//                .forEach(e->{
-//                    String temp = sql.get();
-//                    temp +=e.toString();
-//                    sql.set(temp);
-//                });
-//        String strSql = sql.get();
         statement.execute(strSql);
         return true;
     }
@@ -117,14 +95,6 @@ public class MySqlDriver extends BaseSqlDriver {
     public boolean insert(Connection connection,String tableName,List<String> values) throws SQLException {
         Statement statement = connection.createStatement();
         String sql = "INSERT INTO " + tableName + SqlStringUtil.toInsert(values);
-        //提取Sql指令
-//        for(int i = 1 ; i< values.size();i++){
-//            if(values.get(i)!=null)
-//                sql += ", '" + String.valueOf(values.get(i))+"'";
-//            else
-//                sql += ", " + String.valueOf(values.get(i));
-//        }
-//        sql+=")";
         statement.execute(sql);
         return true;
     }
@@ -135,34 +105,7 @@ public class MySqlDriver extends BaseSqlDriver {
      */
     public boolean update(Connection connection,String tableName,Map<String,String> map,Map<String,String> where,List<Boolean> andOr) throws SQLException {
         Statement statement = connection.createStatement();
-//        AtomicReference<String> sql = new AtomicReference<>("UPDATE " + tableName + " SET");
-        //提取Sql指令
-//        map.keySet().stream()
-//                .map(
-//                        e->{
-//                            return " "+e.toString()+" = '"+map.get(e.toString()) + "' and";
-//                        }
-//                )
-//                .forEach(
-//                        e->{
-//                            String temp = sql.get();
-//                            temp += e;
-//                            sql.set(temp);
-//                        }
-//                );
-//        String strSql = sql.get();
         String strSql = "UPDATE " + tableName + " SET"+SqlStringUtil.toUpdate(map) +" WHERE";
-//        sql.set(strSql);
-        //提取Sql指令
-//        where.keySet().stream()
-//                .map(e->{
-//                    return " "+e.toString()+" = "+where.get(e.toString());
-//                })
-//                .forEach(e->{
-//                    String temp = sql.get();
-//                    temp +=e.toString();
-//                    sql.set(temp);
-//                });
         strSql = strSql+SqlStringUtil.toAndWhere(where,andOr);
         statement.execute(strSql);
         return true;

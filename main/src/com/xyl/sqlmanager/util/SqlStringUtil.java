@@ -107,7 +107,6 @@ public class SqlStringUtil {
 
     public static String toInsert(List<String> values){
         String sql = values.get(0)==null?" values("+values.get(0):" values('"+values.get(0)+"'";
-//        String sql = " values('"+values.get(0)+"'";
         //提取Sql指令
         for(int i = 1 ; i< values.size();i++){
             if(values.get(i)!=null)

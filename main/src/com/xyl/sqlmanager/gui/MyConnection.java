@@ -1,6 +1,5 @@
 package com.xyl.sqlmanager.gui;
 
-import com.xyl.sqlmanager.DBFileFilter;
 import com.xyl.sqlmanager.MySqlDriver;
 import com.xyl.sqlmanager.SqliteDriver;
 
@@ -9,8 +8,6 @@ import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
-import java.awt.im.InputContext;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
@@ -204,17 +201,13 @@ public class MyConnection extends JFrame {
     public void switchSqlite(){
         mysqlPanel.setVisible(false);
         mysqlVersionPanel.setVisible(false);
-//        connectionPanel.setVisible(false);
         sqlitePanel.setVisible(true);
-//        connectionPanel.setVisible(true);
     }
 
     public void switchMysql(){
         sqlitePanel.setVisible(false);
-//        connectionPanel.setVisible(false);
         mysqlPanel.setVisible(true);
         mysqlVersionPanel.setVisible(true);
-//        connectionPanel.setVisible(true);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.xyl.sqlmanager;
+package com.xyl.sqlmanager.gui;
 
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
