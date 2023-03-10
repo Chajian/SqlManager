@@ -1,0 +1,4 @@
+#ingore folder
+out/
+target/
+.idea/
