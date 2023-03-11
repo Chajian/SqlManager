@@ -5,23 +5,23 @@ package com.xyl.sqlmanager.db;
  * 左-分支
  * 右-树
  */
-public class Forest {
-    Node root;
+public class Forest<T> {
+    Node<T> root;
 
 
-    public Forest(String value){
+    public Forest(T value){
         root = new Node();
         root.setValue(value);
     }
-    public Node getRoot() {
+    public Node<T> getRoot() {
         return root;
     }
 
     //插入左子树
-    public void insertLeft(Node node,String value){
-        Node next = left(node);//左子树
+    public void insertLeft(Node<T> node,T value){
+        Node<T> next = node.getLeft();//左子树
         if(next==null) {
-            Node target = new Node();
+            Node<T> target = new Node();
             target.setValue(value);
             node.setLeft(target);
         }
@@ -29,10 +29,10 @@ public class Forest {
             insertLeft(next,value);
     }
     //插入右子树
-    public void insertRight(Node node,String value){
-        Node next = right(node);//右子树
+    public void insertRight(Node<T> node,T value){
+        Node<T> next = node.getRight();//右子树
         if(next==null) {
-            Node target = new Node();
+            Node<T> target = new Node();
             target.setValue(value);
             node.setRight(target);
         }
@@ -45,7 +45,7 @@ public class Forest {
      * @param node
      * @return
      */
-    public Node searchDLR(Node node,String value){
+    public Node<T> searchDLR(Node<T> node,String value){
         if(node.getValue().equals(value)){
             return node;
         }
@@ -63,7 +63,7 @@ public class Forest {
      * @param node
      * @return
      */
-    public Node searchDRL(Node node,String value){
+    public Node<T> searchDRL(Node<T> node,String value){
         if(node.getValue().equals(value)){
             return node;
         }
@@ -82,7 +82,7 @@ public class Forest {
      * @param value 森林名
      * @return
      */
-    public Node searchForest(Node node,String value){
+    public Node<T> searchForest(Node<T> node,String value){
         if(node.getValue().equals(value)){
             return node;
         }
@@ -98,7 +98,7 @@ public class Forest {
      * @param value 树名
      * @return
      */
-    public Node searchTree(Node node,String value){
+    public Node searchTree(Node<T> node,String value){
         if(node.getValue().equals(value)){
             return node;
         }
@@ -106,12 +106,5 @@ public class Forest {
             return searchDRL(node.getLeft(),value);
         }
         return null;
-    }
-
-    public Node left(Node node){
-        return node.getLeft();
-    }
-    public Node right(Node node){
-        return node.getRight();
     }
 }

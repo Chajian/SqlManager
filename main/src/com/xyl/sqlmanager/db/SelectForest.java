@@ -22,7 +22,7 @@ public class SelectForest implements SqlGenerator {
             return node.getValue()+" "+generationSql(node.getLeft())+" "+generationSql(node.getRight());
         }
         else{
-            return node.getValue();
+            return node.getValue().toString();
         }
     }
 
@@ -46,5 +46,10 @@ public class SelectForest implements SqlGenerator {
     @Override
     public Node searchNode(String nodeName) {
         return root.searchForest(root.getRoot(),nodeName);
+    }
+
+    @Override
+    public Forest generate(String sql) {
+        return null;
     }
 }

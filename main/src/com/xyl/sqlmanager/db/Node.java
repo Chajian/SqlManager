@@ -3,32 +3,32 @@ package com.xyl.sqlmanager.db;
 /**
  * 节点
  */
-public class Node {
-    private String value;
-    private Node left;
-    private Node right;
+public class Node<T> {
+    private T value;
+    private Node<T> left;
+    private Node<T> right;
 
-    public String getValue() {
+    public T getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(T value) {
         this.value = value;
     }
 
-    public Node getLeft() {
+    public Node<T> getLeft() {
         return left;
     }
 
-    public void setLeft(Node left) {
+    public void setLeft(Node<T> left) {
         this.left = left;
     }
 
-    public Node getRight() {
+    public Node<T> getRight() {
         return right;
     }
 
-    public void setRight(Node right) {
+    public void setRight(Node<T> right) {
         this.right = right;
     }
 }

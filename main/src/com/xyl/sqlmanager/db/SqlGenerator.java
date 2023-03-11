@@ -1,7 +1,7 @@
 package com.xyl.sqlmanager.db;
 
 /**
- *
+ * sql 语句生成器
  */
 public interface SqlGenerator {
     String generate();
@@ -11,4 +11,6 @@ public interface SqlGenerator {
     void insertContent(String nodeName,String value);
 
     Node searchNode(String nodeName);
+
+    Forest generate(String sql);
 }
