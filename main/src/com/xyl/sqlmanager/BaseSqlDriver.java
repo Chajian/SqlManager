@@ -165,8 +165,8 @@ public class BaseSqlDriver implements SqlDriver {
         else {
             sql = "SELECT * FROM " + tableName;
             forest.insertLeaf("select","*");
-            forest.insertNode("from");
-            forest.insertLeaf("from",tableName);
+            forest.insertNode("from").insertLeft(tableName);
+//            forest.insertLeaf("from",tableName);
         }
         Statement statement = connection.createStatement();
         if(statement.execute(sql)){

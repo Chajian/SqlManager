@@ -1,5 +1,7 @@
 package com.xyl.sqlmanager;
 
+import com.xyl.sqlmanager.db.SelectForest;
+import com.xyl.sqlmanager.db.SqlGenerator;
 import com.xyl.sqlmanager.util.SqlStringUtil;
 
 import java.sql.*;
@@ -46,15 +48,19 @@ public class MySqlDriver extends BaseSqlDriver {
     public List<Map<String,String>> select(Connection connection, String tableName,Map<String,String> where,List<String> columns) throws SQLException {
 
         List<Map<String,String>> map = new ArrayList<>();
-        String sql="";
-        if(columns != null)
-            sql = "SELECT "+SqlStringUtil.toColumn(columns)+" FROM "+tableName;
-        else
-            sql = "SELECT * FROM "+tableName;
+        SelectForest forest = new SelectForest();
+        if(columns != null) {
+            forest.getRoot().insertLeft(SqlStringUtil.toColumn(columns));
+            forest.getRoot().insertRight("from").insertLeft(tableName);
+        }
+        else {
+            forest.insertLeaf("select","*");
+            forest.insertNode("from").insertLeft(tableName);
+        }
         //多页查询
-        sql += " LIMIT 0, 100";
+        forest.insertNode("LIMIT").insertLeft("0,").insertLeft("100");
         Statement statement = connection.createStatement();
-        if(statement.execute(sql)){
+        if(statement.execute(forest.generate())){
             ResultSet resultSet = statement.getResultSet();
             while(resultSet.next()){
                 Map<String,String> item = new TreeMap<String, String>();
