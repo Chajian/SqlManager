@@ -6,11 +6,17 @@ package com.xyl.sqlmanager.db;
 public interface SqlGenerator {
     String generate();
 
-    void insertNode(String value);
+    Node insertNode(String value);
 
-    void insertContent(String nodeName,String value);
+    Node insertLeaf(String nodeName,String value);
 
-    Node searchNode(String nodeName);
 
-    Forest generate(String sql);
+
+    /**
+     * 生成forest的root根
+     * @param node
+     * @param sql
+     * @return
+     */
+    Node generate(Node node,String sql);
 }

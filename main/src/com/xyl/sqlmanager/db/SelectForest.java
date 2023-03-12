@@ -1,17 +1,21 @@
 package com.xyl.sqlmanager.db;
 
+import java.util.Arrays;
+
 /**
  * 查询树
  */
 public class SelectForest implements SqlGenerator {
 
-    Forest root;
+    Node root;
+    private String[] keys = {"select","from","where","order","group","LIMIT"};
+
 
     public SelectForest() {
-        root = new Forest("select");
+        root = new Node("select");
     }
 
-    public Forest getRoot() {
+    public Node getRoot() {
         return root;
     }
 
@@ -26,30 +30,55 @@ public class SelectForest implements SqlGenerator {
         }
     }
 
+    public boolean isKey(String s){
+        for(int i = 0 ; i < keys.length ; i++)
+            if(keys[i].equalsIgnoreCase(s))
+                return true;
+        return false;
+    }
+
 
     @Override
     public String generate() {
-        return generationSql(getRoot().getRoot());
+        return generationSql(getRoot());
     }
 
     @Override
-    public void insertNode(String value) {
-        root.insertRight(root.getRoot().getRight(),value);
+    public Node insertNode(String value) {
+        return root.insertRight(value);
     }
 
     @Override
-    public void insertContent(String nodeName,String value) {
-        Node node = root.searchForest(root.getRoot(),nodeName);
-        root.insertLeft(node,value);
+    public Node insertLeaf(String nodeName,String value) {
+        Node node = root.searchDRL(root,nodeName);
+        return root.insertLeft(node,value);
     }
 
-    @Override
-    public Node searchNode(String nodeName) {
-        return root.searchForest(root.getRoot(),nodeName);
-    }
+
+
+
 
     @Override
-    public Forest generate(String sql) {
-        return null;
+    public Node generate(Node node,String sql) {
+        String[] s = sql.split(" ");
+        Node last = null;
+        for(int i = 1 ; i < s.length ; i++){
+            if(isKey(s[i])){
+                Node next = new Node();
+                next.setValue(s[i]);
+                node.insertRight(node,next);
+                last = next;
+            }
+            else{
+                Node leaf = new Node();
+                leaf.setValue(s[i]);
+                if(last!=null)
+                    last.insertLeft(last,leaf);
+                else
+                    node.insertLeft(node,leaf);
+            }
+        }
+
+        return node;
     }
 }

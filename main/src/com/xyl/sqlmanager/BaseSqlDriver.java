@@ -1,6 +1,7 @@
 package com.xyl.sqlmanager;
 
 import com.mysql.cj.xdevapi.Result;
+import com.xyl.sqlmanager.db.SelectForest;
 import com.xyl.sqlmanager.util.SqlStringUtil;
 
 import java.sql.*;
@@ -152,11 +153,21 @@ public class BaseSqlDriver implements SqlDriver {
     public List<Map<String,String>> select(Connection connection, String tableName, Map<String,String> where, List<String> columns) throws SQLException {
 
         List<Map<String,String>> map = new ArrayList<>();
+        SelectForest forest = new SelectForest();
         String sql="";
-        if(columns != null)
-            sql = "SELECT "+ SqlStringUtil.toColumn(columns)+" FROM "+tableName;
-        else
-            sql = "SELECT * FROM "+tableName;
+        if(columns != null) {
+            sql = "SELECT " + SqlStringUtil.toColumn(columns) + " FROM " + tableName;
+            forest.getRoot().insertLeft(SqlStringUtil.toColumn(columns));
+//            forest.insertLeaf("select",SqlStringUtil.toColumn(columns));
+//            forest.insertNode("FROM");
+            forest.getRoot().insertRight("from").insertLeft(tableName);
+        }
+        else {
+            sql = "SELECT * FROM " + tableName;
+            forest.insertLeaf("select","*");
+            forest.insertNode("from");
+            forest.insertLeaf("from",tableName);
+        }
         Statement statement = connection.createStatement();
         if(statement.execute(sql)){
             ResultSet resultSet = statement.getResultSet();
