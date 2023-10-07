@@ -102,46 +102,44 @@ public class TestSqlStringUtil {
         connectInfo.setName("test连接");
         connectInfo.setVersion("5.x");
         connectInfo.setTimestamp(String.valueOf(new Date().getTime()));
-        FileUtil fileUtil = new FileUtil();
+        CacheUtil cacheUtil = new CacheUtil();
         byte[] bytes = new byte[224];
-        fileUtil.stringToBytes32(connectInfo.getName(),bytes,0);
-        fileUtil.stringToBytes32(connectInfo.getHost(),bytes,32);
-        fileUtil.stringToBytes32(connectInfo.getPort(),bytes,64);
-        fileUtil.stringToBytes32(connectInfo.getUser(),bytes,96);
-        fileUtil.stringToBytes32(connectInfo.getPass(),bytes,128);
-        fileUtil.stringToBytes32(connectInfo.getVersion(),bytes,160);
-        fileUtil.stringToBytes32(connectInfo.getTimestamp(),bytes,192);
+        cacheUtil.stringToBytes32(connectInfo.getName(),bytes,0);
+        cacheUtil.stringToBytes32(connectInfo.getHost(),bytes,32);
+        cacheUtil.stringToBytes32(connectInfo.getPort(),bytes,64);
+        cacheUtil.stringToBytes32(connectInfo.getUser(),bytes,96);
+        cacheUtil.stringToBytes32(connectInfo.getPass(),bytes,128);
+        cacheUtil.stringToBytes32(connectInfo.getVersion(),bytes,160);
+        cacheUtil.stringToBytes32(connectInfo.getTimestamp(),bytes,192);
         File file = new File("aaa.jj");
-        fileUtil.writeByte(bytes,file);
+        cacheUtil.writeByte(bytes,file);
     }
 
-    @Test
-    public void readBytes() throws IOException {
-        FileUtil fileUtil = new FileUtil();
-        ConnectInfo connectInfo = new ConnectInfo();
-        String path = "aaa.jj";
-        File file = new File(path);
-        FileInputStream fileInputStream = new FileInputStream(file);
-        List<String> strings = fileUtil.readBytes(file);
-        byte[] bytes = new byte[32];
-        while(fileInputStream.read(bytes)!=-1){
-            String string = new String(bytes);
-            System.out.println(string.trim());
-        }
 
-    }
-
+    //反射测试-get
     @Test
-    public void testReflect(){
+    public void testReflectGet() throws NoSuchMethodException {
         Field[] fields = ConnectInfo.class.getFields();
-        Method[] methods = ConnectInfo.class.getMethods();
         List<Method> list = new ArrayList<>();
-        for(Method method:methods) {
-            if (method.getName().substring(0, 3).equals("get")) {
-                list.add(method);
-            }
+        for(Field field:fields) {
+            String name = field.getName();
+            name = "get"+(char)(name.charAt(0)-32)+name.substring(1,name.length());
+            Method method = ConnectInfo.class.getMethod(name,null);
+            list.add(method);
         }
-        list.remove(list.size()-1);
+        System.out.println();
+    }
+    //反射测试-set
+    @Test
+    public void testReflectSet() throws NoSuchMethodException {
+        Field[] fields = ConnectInfo.class.getFields();
+        List<Method> list = new ArrayList<>();
+        for(Field field:fields) {
+            String name = field.getName();
+            name = "set"+(char)(name.charAt(0)-32)+name.substring(1,name.length());
+            Method method = ConnectInfo.class.getMethod(name,String.class);
+            list.add(method);
+        }
         System.out.println();
     }
 

@@ -5,12 +5,13 @@ import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+import java.util.List;
 
-public class TestFileUtil {
+public class TestCacheUtil {
 
     @Test
-    public void testSave() throws InvocationTargetException, IllegalAccessException {
-        FileUtil fileUtil = new FileUtil();
+    public void testSave() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+        CacheUtil cacheUtil = new CacheUtil();
         ConnectInfo connectInfo = new ConnectInfo();
         connectInfo.setHost("localhost");
         connectInfo.setUser("root");
@@ -19,7 +20,17 @@ public class TestFileUtil {
         connectInfo.setName("test连接");
         connectInfo.setVersion("5.x");
         connectInfo.setTimestamp(String.valueOf(new Date().getTime()));
-        fileUtil.saveConnectInfo(connectInfo);
+        cacheUtil.saveConnectInfo(connectInfo);
+    }
+
+    @Test
+    public void getConnections(){
+        CacheUtil cacheUtil = new CacheUtil();
+        List<ConnectInfo> connectInfos = cacheUtil.getConnectInfos();
+        for(ConnectInfo connectInfo:connectInfos){
+            System.out.println(connectInfo.toString());
+        }
+
     }
 
 }
