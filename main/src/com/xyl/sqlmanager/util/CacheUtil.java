@@ -8,16 +8,23 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 文件读写
+ * 文件读写-缓存工具
+ * @author YangLin
+ * @date 2023/10/7 20:55
  */
-public class FileUtil {
+public class CacheUtil {
     String path = "aa.jj";
 
+    /**
+     * 把二进制流写入到文件中
+     * @param context
+     * @param file
+     * @return
+     */
     public boolean writeByte(byte[] context,File file){
         try {
 
@@ -31,19 +38,11 @@ public class FileUtil {
         return true;
     }
 
-    public List readBytes(File file) throws IOException {
-        List<String> list = new ArrayList<>();
-        FileInputStream fileInputStream = new FileInputStream(file);
-        byte[] buffer = new byte[192];
-        while(fileInputStream.read(buffer)!=-1){
-            String info = buffer.toString();
-            list.add(info);
-        }
-        return list;
-    }
+
 
     /**
-     *
+     * 把字符串转换为byte数组
+     * 固定大小为32,不足填0
      * @param info 字符串
      * @param button byte存放池
      * @param start 开始存放位置
@@ -55,6 +54,13 @@ public class FileUtil {
         }
     }
 
+    /**
+     * 把int转换为byte数组
+     * 固定大小为32,不足填0
+     * @param value 值
+     * @param buttom byte存放池
+     * @param start 开始存放位置
+     */
     public void intToBytes32(int value,byte[] buttom,int start) {
         // Convert the integer to bytes using bit manipulation
         buttom[start++] = (byte) (value >> 24);
@@ -64,7 +70,8 @@ public class FileUtil {
     }
 
     /**
-     * 保存远程连接信息
+     * 保存远程连接信息到缓存文件中
+     * @param connectInfo 被保存对象
      */
     public void saveConnectInfo(ConnectInfo connectInfo) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         Field[] fields = ConnectInfo.class.getFields();
@@ -86,8 +93,9 @@ public class FileUtil {
     }
 
     /**
-     * 获取远程连接信息
-     * @return
+     * 获取远程连接信息从缓存文件中
+     * 按照时间顺序降序排列
+     * @return list
      */
     public List<ConnectInfo> getConnectInfos(){
         List<ConnectInfo> connectInfos = new ArrayList<>();

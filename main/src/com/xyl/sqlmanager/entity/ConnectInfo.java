@@ -8,16 +8,24 @@ package com.xyl.sqlmanager.entity;
  * 超过最大长度的内容不会被保存
  */
 public class ConnectInfo {
-    String name;
-    String host;
-    String user;
-    String pass;
-    String port;
-    String version;
+    public String name;
+    public String host;
+    public String user;
+    public String pass;
+    public String port;
+    public String version;
     /**
      * 时间戳
      */
-    String timestamp;
+    public String timestamp;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getHost() {
         return host;
@@ -25,14 +33,6 @@ public class ConnectInfo {
 
     public void setHost(String host) {
         this.host = host;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public String getVersion() {
-        return version;
     }
 
     public String getUser() {
@@ -59,14 +59,12 @@ public class ConnectInfo {
         this.port = port;
     }
 
-
-
-    public String getName() {
-        return name;
+    public String getVersion() {
+        return version;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public String getTimestamp() {
@@ -75,5 +73,18 @@ public class ConnectInfo {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "ConnectInfo{" +
+                "name='" + name + '\'' +
+                ", host='" + host + '\'' +
+                ", user='" + user + '\'' +
+                ", pass='" + pass + '\'' +
+                ", port='" + port + '\'' +
+                ", version='" + version + '\'' +
+                ", timestamp='" + timestamp + '\'' +
+                '}';
     }
 }
