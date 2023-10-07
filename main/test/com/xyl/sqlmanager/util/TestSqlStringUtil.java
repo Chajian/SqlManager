@@ -3,8 +3,7 @@ package com.xyl.sqlmanager.util;
 import com.xyl.sqlmanager.entity.ConnectInfo;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,6 +85,10 @@ public class TestSqlStringUtil {
         System.out.println();
     }
 
+    /**
+     * 写入ConnectInfo到文件中
+     * @throws UnsupportedEncodingException
+     */
     @Test
     public void tobytes() throws UnsupportedEncodingException {
 
@@ -93,19 +96,35 @@ public class TestSqlStringUtil {
         connectInfo.setHost("localhost");
         connectInfo.setUser("root");
         connectInfo.setPass("123456");
-        connectInfo.setPort(3306);
+        connectInfo.setPort("3306");
         connectInfo.setName("test连接");
         connectInfo.setVersion("5.x");
         FileUtil fileUtil = new FileUtil();
         byte[] bytes = new byte[192];
         fileUtil.stringToBytes32(connectInfo.getName(),bytes,0);
         fileUtil.stringToBytes32(connectInfo.getHost(),bytes,32);
-        fileUtil.intToBytes32(connectInfo.getPort(),bytes,64);
+        fileUtil.stringToBytes32(connectInfo.getPort(),bytes,64);
         fileUtil.stringToBytes32(connectInfo.getUser(),bytes,96);
         fileUtil.stringToBytes32(connectInfo.getPass(),bytes,128);
         fileUtil.stringToBytes32(connectInfo.getVersion(),bytes,160);
         File file = new File("aaa.jj");
         fileUtil.writeByte(bytes,file);
+    }
+
+    @Test
+    public void readBytes() throws IOException {
+        FileUtil fileUtil = new FileUtil();
+        ConnectInfo connectInfo = new ConnectInfo();
+        String path = "aaa.jj";
+        File file = new File(path);
+        FileInputStream fileInputStream = new FileInputStream(file);
+        List<String> strings = fileUtil.readBytes(file);
+        byte[] bytes = new byte[32];
+        while(fileInputStream.read(bytes)!=-1){
+            String string = new String(bytes);
+            System.out.println(string.trim());
+        }
+
     }
 
 }

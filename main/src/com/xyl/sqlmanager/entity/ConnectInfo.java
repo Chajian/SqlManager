@@ -12,7 +12,7 @@ public class ConnectInfo {
     String host;
     String user;
     String pass;
-    int port;
+    String port;
     String version;
 
     public String getHost() {
@@ -47,11 +47,11 @@ public class ConnectInfo {
         this.pass = pass;
     }
 
-    public int getPort() {
+    public String getPort() {
         return port;
     }
 
-    public void setPort(int port) {
+    public void setPort(String port) {
         this.port = port;
     }
 

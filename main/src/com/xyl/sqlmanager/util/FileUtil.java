@@ -22,7 +22,7 @@ public class FileUtil {
         return true;
     }
 
-    public List readBytes(byte[] context, File file) throws IOException {
+    public List readBytes(File file) throws IOException {
         List<String> list = new ArrayList<>();
         FileInputStream fileInputStream = new FileInputStream(file);
         byte[] buffer = new byte[192];
