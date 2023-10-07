@@ -14,6 +14,10 @@ public class ConnectInfo {
     String pass;
     String port;
     String version;
+    /**
+     * 时间戳
+     */
+    String timestamp;
 
     public String getHost() {
         return host;
@@ -63,5 +67,13 @@ public class ConnectInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 }

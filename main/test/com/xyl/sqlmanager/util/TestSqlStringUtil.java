@@ -4,6 +4,8 @@ import com.xyl.sqlmanager.entity.ConnectInfo;
 import org.junit.Test;
 
 import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -99,14 +101,16 @@ public class TestSqlStringUtil {
         connectInfo.setPort("3306");
         connectInfo.setName("test连接");
         connectInfo.setVersion("5.x");
+        connectInfo.setTimestamp(String.valueOf(new Date().getTime()));
         FileUtil fileUtil = new FileUtil();
-        byte[] bytes = new byte[192];
+        byte[] bytes = new byte[224];
         fileUtil.stringToBytes32(connectInfo.getName(),bytes,0);
         fileUtil.stringToBytes32(connectInfo.getHost(),bytes,32);
         fileUtil.stringToBytes32(connectInfo.getPort(),bytes,64);
         fileUtil.stringToBytes32(connectInfo.getUser(),bytes,96);
         fileUtil.stringToBytes32(connectInfo.getPass(),bytes,128);
         fileUtil.stringToBytes32(connectInfo.getVersion(),bytes,160);
+        fileUtil.stringToBytes32(connectInfo.getTimestamp(),bytes,192);
         File file = new File("aaa.jj");
         fileUtil.writeByte(bytes,file);
     }
@@ -125,6 +129,20 @@ public class TestSqlStringUtil {
             System.out.println(string.trim());
         }
 
+    }
+
+    @Test
+    public void testReflect(){
+        Field[] fields = ConnectInfo.class.getFields();
+        Method[] methods = ConnectInfo.class.getMethods();
+        List<Method> list = new ArrayList<>();
+        for(Method method:methods) {
+            if (method.getName().substring(0, 3).equals("get")) {
+                list.add(method);
+            }
+        }
+        list.remove(list.size()-1);
+        System.out.println();
     }
 
 }
