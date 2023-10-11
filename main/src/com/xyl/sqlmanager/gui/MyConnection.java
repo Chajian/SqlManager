@@ -27,7 +27,7 @@ public class MyConnection extends JFrame {
     JButton login,exit,openSqliteFile;
     JRadioButton version5,version8;
     MySqlDriver mySqlDriver;
-    Panel mysqlPanel,sqlitePanel,choosePanel,mysqlVersionPanel,connectionPanel;
+    Panel mysqlPanel,sqlitePanel,choosePanel,connectionPanel;
     /**
      * cardLayout布局
      * 采用卡片布局切换sqlite和mysqlui
@@ -45,46 +45,15 @@ public class MyConnection extends JFrame {
         super("数据库连接工具");
         setLayout(new GridLayout(3,1));
         connectionPanel = new ConnectCard();
-        connectInfoPanel = new Panel();
-        cardLayout = new CardLayout();
-        connectInfoPanel.setLayout(cardLayout);
+        choosePanel = new ChooseCard();
+        connectInfoPanel = new ConnectInfoCard();
 
 
-        //选择sql数据库点击事件
-        choosePanel = new Panel();
-        JLabel choonseTitle = new JLabel("数据库类型");
-        mysql = new JRadioButton("MYSQL",true);
-        sqlite = new JRadioButton("SQLITE",false);
-        sqlite.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switchSqlite();
-            }
-        });
-        mysql.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                switchMysql();
-            }
-        });
-
-        choice.add(mysql);
-        choice.add(sqlite);
-        choosePanel.add(choonseTitle);
-        choosePanel.add(mysql);
-        choosePanel.add(sqlite);
-
-
-        mysqlPanel = new MysqlCard();
-        connectInfoPanel.add(mysqlPanel,"mysql");
-        sqlitePanel = new SqliteCard();
-        connectInfoPanel.add(sqlitePanel,"sqlite");
 
         //选择版本
         add(choosePanel);
         add(connectInfoPanel);
         add(connectionPanel);
-
         switchMysql();
 
         Charset utf8Charset = Charset.forName("UTF-8");
@@ -98,6 +67,7 @@ public class MyConnection extends JFrame {
         // 获取GraphicsEnvironment对象
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
+        //修复mac加载字体失败导致的闪崩问题
         Arrays.stream(ge.getAvailableFontFamilyNames())
                 .forEach(
                         e->{
@@ -134,6 +104,17 @@ public class MyConnection extends JFrame {
     /**
      * xxxCard 存放xxxPanel的组件和相应的事件
      */
+
+    class ConnectInfoCard extends Panel{
+        {
+            cardLayout = new CardLayout();
+            setLayout(cardLayout);
+            mysqlPanel = new MysqlCard();
+            add(mysqlPanel,"mysql");
+            sqlitePanel = new SqliteCard();
+            add(sqlitePanel,"sqlite");
+        }
+    }
     class MysqlCard extends Panel{
 
         {
@@ -150,7 +131,6 @@ public class MyConnection extends JFrame {
             add(new JLabel("密码"));
             add(pass);
             GridLayout gridLayout = new GridLayout(5,2);
-//            mysqlVersionPanel = new Panel();
 
             version5 = new JRadioButton("MYSQL5.x",false);
             version8 = new JRadioButton("MYSQL8.x",true);
@@ -235,6 +215,34 @@ public class MyConnection extends JFrame {
             add(login);
             add(exit);
         }
+    }
+    class ChooseCard extends Panel{
+
+        {
+            //选择sql数据库点击事件
+            JLabel choonseTitle = new JLabel("数据库类型");
+            mysql = new JRadioButton("MYSQL",true);
+            sqlite = new JRadioButton("SQLITE",false);
+            sqlite.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    switchSqlite();
+                }
+            });
+            mysql.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    switchMysql();
+                }
+            });
+
+            choice.add(mysql);
+            choice.add(sqlite);
+            add(choonseTitle);
+            add(mysql);
+            add(sqlite);
+        }
+
     }
 
 }
