@@ -20,41 +20,30 @@ public class MyConnection extends JFrame {
 
     public static boolean isEnableTimes = false;
 
-    JTextField ip,port,user;
-    JPasswordField pass;
-    ButtonGroup cg = new ButtonGroup();
-    ButtonGroup choice = new ButtonGroup();
-    JButton login,exit,openSqliteFile;
-    JRadioButton version5,version8;
+
     MySqlDriver mySqlDriver;
-    Panel mysqlPanel,sqlitePanel,choosePanel,connectionPanel;
-    /**
-     * cardLayout布局
-     * 采用卡片布局切换sqlite和mysqlui
-     */
-    Panel connectInfoPanel;
-    File sqliteFile = null;
-    JRadioButton mysql,sqlite;
-    /**
-     * 卡片布局，切换sqlite和mysql
-     */
-    CardLayout cardLayout;
+    ConnectInfoCard connectInfoCard;
+    ConnectCard connectCard;
+    MysqlCard mysqlCard;
+    SqliteCard sqliteCard;
+    ChooseCard chooseCard;
+
 
 
     public MyConnection(){
         super("数据库连接工具");
         setLayout(new GridLayout(3,1));
-        connectionPanel = new ConnectCard();
-        choosePanel = new ChooseCard();
-        connectInfoPanel = new ConnectInfoCard();
+        connectCard = new ConnectCard();
+        chooseCard = new ChooseCard();
+        connectInfoCard = new ConnectInfoCard();
 
 
 
         //选择版本
-        add(choosePanel);
-        add(connectInfoPanel);
-        add(connectionPanel);
-        switchMysql();
+        add(chooseCard);
+        add(connectInfoCard);
+        add(connectCard);
+        connectInfoCard.switchMysql();
 
         Charset utf8Charset = Charset.forName("UTF-8");
         Font font = new Font("宋体", Font.PLAIN, 12);
@@ -93,29 +82,40 @@ public class MyConnection extends JFrame {
         }
     }
 
-    public void switchSqlite(){
-        cardLayout.show(connectInfoPanel,"sqlite");
-    }
-
-    public void switchMysql(){
-        cardLayout.show(connectInfoPanel,"mysql");
-    }
 
     /**
      * xxxCard 存放xxxPanel的组件和相应的事件
      */
 
     class ConnectInfoCard extends Panel{
+        /**
+         * cardLayout布局
+         * 采用卡片布局切换sqlite和mysqlui
+         */
+        CardLayout cardLayout;
         {
             cardLayout = new CardLayout();
             setLayout(cardLayout);
-            mysqlPanel = new MysqlCard();
-            add(mysqlPanel,"mysql");
-            sqlitePanel = new SqliteCard();
-            add(sqlitePanel,"sqlite");
+            mysqlCard = new MysqlCard();
+            add(mysqlCard,"mysql");
+            sqliteCard = new SqliteCard();
+            add(sqliteCard,"sqlite");
         }
+
+        public void switchSqlite(){
+            cardLayout.show(this,"sqlite");
+        }
+
+        public void switchMysql(){
+            cardLayout.show(this,"mysql");
+        }
+
     }
     class MysqlCard extends Panel{
+        JTextField ip,port,user;
+        JPasswordField pass;
+        JRadioButton version5,version8;
+        ButtonGroup cg = new ButtonGroup();
 
         {
             ip = new JTextField("localhost",30);
@@ -142,8 +142,59 @@ public class MyConnection extends JFrame {
             setLayout(gridLayout);
             this.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         }
+
+        public JTextField getIp() {
+            return ip;
+        }
+
+        public void setIp(JTextField ip) {
+            this.ip = ip;
+        }
+
+        public JTextField getPort() {
+            return port;
+        }
+
+        public void setPort(JTextField port) {
+            this.port = port;
+        }
+
+        public JTextField getUser() {
+            return user;
+        }
+
+        public void setUser(JTextField user) {
+            this.user = user;
+        }
+
+        public JPasswordField getPass() {
+            return pass;
+        }
+
+        public void setPass(JPasswordField pass) {
+            this.pass = pass;
+        }
+
+        public JRadioButton getVersion5() {
+            return version5;
+        }
+
+        public void setVersion5(JRadioButton version5) {
+            this.version5 = version5;
+        }
+
+        public JRadioButton getVersion8() {
+            return version8;
+        }
+
+        public void setVersion8(JRadioButton version8) {
+            this.version8 = version8;
+        }
     }
     class SqliteCard extends Panel{
+        JButton openSqliteFile;
+        File sqliteFile = null;
+
         {
             //sqlite
             openSqliteFile = new JButton("选择sqlite文件");
@@ -163,21 +214,30 @@ public class MyConnection extends JFrame {
             add(openSqliteFile);
             setVisible(true);
         }
+
+        public File getSqliteFile() {
+            return sqliteFile;
+        }
+
+        public void setSqliteFile(File sqliteFile) {
+            this.sqliteFile = sqliteFile;
+        }
     }
 
     class ConnectCard extends Panel{
+        JButton login,exit;
         {
             login = new JButton("连接");
             login.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if(mysql.isSelected()) {
-                        String strUser = user.getText().toString();
-                        String strPass = pass.getText().toString();
-                        String strIp = ip.getText().toString();
-                        String strPort = port.getText().toString();
+                    if(chooseCard.getMysql().isSelected()) {
+                        String strUser = mysqlCard.getUser().getText().toString();
+                        String strPass = mysqlCard.getPass().getText().toString();
+                        String strIp = mysqlCard.getIp().getText().toString();
+                        String strPort = mysqlCard.getPort().getText().toString();
                         int version = 8;
-                        if (version5.isSelected()) {
+                        if (mysqlCard.getVersion5().isSelected()) {
                             version = 5;
                         }
 
@@ -192,9 +252,9 @@ public class MyConnection extends JFrame {
                             ex.printStackTrace();
                         }
                     }
-                    else if(sqlite.isSelected()){
+                    else if(chooseCard.getSqlite().isSelected()){
                         try {
-                            SqliteDriver sqliteDriver = new SqliteDriver(sqliteFile);
+                            SqliteDriver sqliteDriver = new SqliteDriver(sqliteCard.getSqliteFile());
                             new MainPanel(sqliteDriver);
                             dispose();
                         } catch (ClassNotFoundException | SQLException ex) {
@@ -217,6 +277,8 @@ public class MyConnection extends JFrame {
         }
     }
     class ChooseCard extends Panel{
+        JRadioButton mysql,sqlite;
+        ButtonGroup choice = new ButtonGroup();
 
         {
             //选择sql数据库点击事件
@@ -226,13 +288,13 @@ public class MyConnection extends JFrame {
             sqlite.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    switchSqlite();
+                    connectInfoCard.switchSqlite();
                 }
             });
             mysql.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    switchMysql();
+                    connectInfoCard.switchMysql();
                 }
             });
 
@@ -243,6 +305,21 @@ public class MyConnection extends JFrame {
             add(sqlite);
         }
 
+        public JRadioButton getMysql() {
+            return mysql;
+        }
+
+        public void setMysql(JRadioButton mysql) {
+            this.mysql = mysql;
+        }
+
+        public JRadioButton getSqlite() {
+            return sqlite;
+        }
+
+        public void setSqlite(JRadioButton sqlite) {
+            this.sqlite = sqlite;
+        }
     }
 
 }
