@@ -19,6 +19,13 @@ import java.util.stream.Collectors;
 public class CacheUtil {
     String path = "aa.jj";
 
+    public CacheUtil(String path) {
+        this.path = path;
+    }
+
+    public CacheUtil() {
+    }
+
     /**
      * 把二进制流写入到文件中
      * @param context
@@ -86,7 +93,7 @@ public class CacheUtil {
         byte[] bytes = new byte[32*list.size()];
         for(int i = 0 ; i < list.size();i++){
             String info = (String) list.get(i).invoke(connectInfo,null);
-            stringToBytes32(info,bytes,i*32);
+            stringToBytes32(info==null?"":info,bytes,i*32);
         }
         File file = new File(path);
         writeByte(bytes,file);

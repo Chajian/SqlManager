@@ -2,6 +2,7 @@ package com.xyl.sqlmanager.gui;
 
 import com.xyl.sqlmanager.MySqlDriver;
 import com.xyl.sqlmanager.SqliteDriver;
+import com.xyl.sqlmanager.entity.ConnectInfo;
 import com.xyl.sqlmanager.gui.panel.ConnectInfoCard;
 import com.xyl.sqlmanager.gui.panel.MysqlCard;
 import com.xyl.sqlmanager.gui.panel.SqliteCard;
@@ -12,6 +13,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -110,10 +112,23 @@ public class MyConnection extends JFrame {
                             mySqlDriver = new MySqlDriver(strUser, strPass, strIp, strPort, version);
                             if (mySqlDriver.getConnection() != null) {
                                 JOptionPane.showMessageDialog(null, "连接成功");
+                                //缓存连接信息
+                                if(connectInfoCard.getMysqlCard().getHostInfos().getSelectedIndex()==-1){
+                                    ConnectInfo connectInfo = new ConnectInfo();
+                                    connectInfo.setName(String.valueOf(System.currentTimeMillis()));
+                                    connectInfo.setHost(strIp);
+                                    connectInfo.setPort(strPort);
+                                    connectInfo.setUser(strUser);
+                                    connectInfo.setPass(strPass);
+                                    connectInfoCard.getMysqlCard().getCacheUtil().saveConnectInfo(connectInfo);
+                                }
+
+
                                 new MainPanel(mySqlDriver);
                                 dispose();
                             }
-                        } catch (ClassNotFoundException | SQLException ex) {
+                        } catch (ClassNotFoundException | SQLException | InvocationTargetException |
+                                 IllegalAccessException | NoSuchMethodException ex) {
                             ex.printStackTrace();
                         }
                     }
