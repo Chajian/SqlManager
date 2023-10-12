@@ -6,6 +6,7 @@ import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -140,4 +141,105 @@ public class CacheUtil {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 获取远程连接信息从缓存文件中
+     * 按照时间顺序降序排列
+     * @return list
+     */
+    public byte[] getConnectInfoBytes(){
+        byte[] bytes = null;
+        File file = new File(path);
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream(file);
+            bytes = new byte[fileInputStream.available()];
+            fileInputStream.read(bytes);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        finally {
+            return bytes;
+        }
+    }
+
+    /**
+     * 更新ConnectInfo
+     * @param connectInfo
+     * @param index
+     * @return
+     */
+    public boolean updateConnectInfo(ConnectInfo connectInfo,int index){
+        File file = new File(path);
+        try {
+            byte[] allbytes = getConnectInfoBytes();
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            int skip = (index * ConnectInfo.class.getFields().length)*32;
+            Field[] fields = ConnectInfo.class.getFields();
+            List<Method> list = new ArrayList<>();
+            for(Field field:fields) {
+                String name = field.getName();
+                name = "get"+(char)(name.charAt(0)-32)+name.substring(1,name.length());
+                Method method = ConnectInfo.class.getMethod(name,null);
+                list.add(method);
+            }
+
+            byte[] bytes = new byte[32*list.size()];
+            for(int i = 0 ; i < list.size();i++){
+                String info = (String) list.get(i).invoke(connectInfo,null);
+                stringToBytes32(info==null?"":info,bytes,i*32);
+            }
+            for(int i = 0;i<bytes.length;i++){
+                allbytes[skip+i] = bytes[i];
+            }
+            fileOutputStream.write(allbytes);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+
+    /**
+     * 获取ConnectInfo通过下标
+     * @param index
+     * @return
+     */
+    public ConnectInfo getConnectInfoByIndex(int index){
+        File file = new File(path);
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            int skip = (index * ConnectInfo.class.getFields().length)*32;
+            fileInputStream.skip(skip);
+            ConnectInfo connectInfo = new ConnectInfo();
+            byte[] bytes = new byte[32];
+            Field[] fields = ConnectInfo.class.getFields();
+            for(int i = 0 ; i < fields.length&&fileInputStream.read(bytes)!=-1;i++) {
+                String value = new String(bytes).trim();
+                String name = fields[i].getName();
+                name = "set"+(char)(name.charAt(0)-32)+name.substring(1,name.length());
+                Method method = ConnectInfo.class.getMethod(name,String.class);
+                method.invoke(connectInfo,value);
+            }
+            return connectInfo;
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

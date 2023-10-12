@@ -33,4 +33,22 @@ public class TestCacheUtil {
 
     }
 
+    @Test
+    public void getConnectionByIndex(){
+        CacheUtil cacheUtil = new CacheUtil();
+        ConnectInfo connectInfo = cacheUtil.getConnectInfoByIndex(0);
+        System.out.println(connectInfo.toString());
+
+    }
+
+
+    @Test
+    public void updateConnection(){
+        CacheUtil cacheUtil = new CacheUtil();
+        ConnectInfo connectInfo = cacheUtil.getConnectInfoByIndex(0);
+        connectInfo.setName("修改测试捏");
+        cacheUtil.updateConnectInfo(connectInfo,0);
+
+    }
+
 }

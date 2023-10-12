@@ -83,8 +83,8 @@ public class MysqlCard extends Panel{
     public void loadCacheHost(String path){
         cacheUtil = new CacheUtil(path);
         List<ConnectInfo> list = cacheUtil.getConnectInfos();
-        for(ConnectInfo connectInfo:list){
-            hostInfos.addItem(connectInfo);
+        for(int i = 0 ; i <list.size() ;i++){
+            hostInfos.addItem(list.get(i));
         }
     }
 

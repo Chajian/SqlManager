@@ -120,9 +120,19 @@ public class MyConnection extends JFrame {
                                     connectInfo.setPort(strPort);
                                     connectInfo.setUser(strUser);
                                     connectInfo.setPass(strPass);
+                                    connectInfo.setTimestamp(String.valueOf(System.currentTimeMillis()));
+                                    connectInfo.setVersion(String.valueOf(version));
                                     connectInfoCard.getMysqlCard().getCacheUtil().saveConnectInfo(connectInfo);
                                 }
-
+                                else{
+                                    ConnectInfo connectInfo = (ConnectInfo) connectInfoCard.getMysqlCard().getHostInfos().getSelectedItem();
+                                    connectInfo.setHost(strIp);
+                                    connectInfo.setPort(strPort);
+                                    connectInfo.setUser(strUser);
+                                    connectInfo.setPass(strPass);
+                                    connectInfo.setTimestamp(String.valueOf(System.currentTimeMillis()));
+                                    connectInfoCard.getMysqlCard().getCacheUtil().updateConnectInfo(connectInfo,connectInfoCard.getMysqlCard().getHostInfos().getSelectedIndex());
+                                }
 
                                 new MainPanel(mySqlDriver);
                                 dispose();
