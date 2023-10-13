@@ -3,6 +3,9 @@ package com.xyl.sqlmanager.gui;
 import com.xyl.sqlmanager.MySqlDriver;
 import com.xyl.sqlmanager.SqliteDriver;
 import com.xyl.sqlmanager.entity.ConnectInfo;
+import com.xyl.sqlmanager.exception.CustomException;
+import com.xyl.sqlmanager.exception.ExceptionHandlingService;
+import com.xyl.sqlmanager.exception.ResponseEnum;
 import com.xyl.sqlmanager.gui.panel.ConnectInfoCard;
 import com.xyl.sqlmanager.gui.panel.MysqlCard;
 import com.xyl.sqlmanager.gui.panel.SqliteCard;
@@ -138,8 +141,9 @@ public class MyConnection extends JFrame {
                                 dispose();
                             }
                         } catch (ClassNotFoundException | SQLException | InvocationTargetException |
-                                 IllegalAccessException | NoSuchMethodException ex) {
-                            ex.printStackTrace();
+                                 IllegalAccessException | NoSuchMethodException | CustomException ex) {
+                            //统一异常处理
+                            throw new CustomException(ResponseEnum.DRIVE_SQL_EXCEPTION.getCode(),ResponseEnum.DRIVE_SQL_EXCEPTION.getMes()+ex.getMessage());
                         }
                     }
                     else if(chooseCard.getSqlite().isSelected()){
@@ -148,7 +152,8 @@ public class MyConnection extends JFrame {
                             new MainPanel(sqliteDriver);
                             dispose();
                         } catch (ClassNotFoundException | SQLException ex) {
-                            ex.printStackTrace();
+                            //统一异常处理
+                            throw new CustomException(ResponseEnum.DRIVE_SQL_EXCEPTION.getCode(),ResponseEnum.DRIVE_SQL_EXCEPTION.getMes()+ex.getMessage());
                         }
                     }
 

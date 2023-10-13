@@ -1,5 +1,7 @@
 package com.xyl.sqlmanager;
 
+import com.xyl.sqlmanager.exception.CustomException;
+import com.xyl.sqlmanager.exception.ResponseEnum;
 import com.xyl.sqlmanager.util.SqlStringUtil;
 
 import java.io.File;
@@ -42,23 +44,28 @@ public class SqliteDriver extends BaseSqlDriver{
     }
 
     @Override
-    public boolean useDataBase(Connection connection, String db) throws SQLException {
+    public boolean useDataBase(Connection connection, String db) {
         return true;
     }
 
     @Override
-    public List<String> showTableColumnNames(Connection connection, String tableName) throws SQLException {
-        Statement statement = connection.createStatement();
-        String sql = "PRAGMA table_info("+tableName+")";
-        if (statement.execute(sql)) {
-            ResultSet resultSet = statement.getResultSet();
-            List<String> fields = new ArrayList<>();
-            while(resultSet.next()){
-                //获取table名
-                String feild = resultSet.getString(2);
-                fields.add(feild);
+    public List<String> showTableColumnNames(Connection connection, String tableName) {
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "PRAGMA table_info(" + tableName + ")";
+            if (statement.execute(sql)) {
+                ResultSet resultSet = statement.getResultSet();
+                List<String> fields = new ArrayList<>();
+                while (resultSet.next()) {
+                    //获取table名
+                    String feild = resultSet.getString(2);
+                    fields.add(feild);
+                }
+                return fields;
             }
-            return fields;
+        }
+        catch (SQLException e){
+            throw new CustomException(ResponseEnum.DES_EXCEPTION.getCode(),ResponseEnum.DES_EXCEPTION.getMes()+e.getMessage());
         }
         return null;
     }

@@ -5,6 +5,8 @@ public enum ResponseEnum {
     SELECT_EXCEPTION("EX502","select语句出问题"),
     DES_EXCEPTION("EX503","desc语句出问题"),
     CUS_SQL_EXCEPTION("EX505","执行自定义sql出问题"),
+
+    DRIVE_SQL_EXCEPTION("EX506","执行mysql驱动出问题"),
     ;
 
 

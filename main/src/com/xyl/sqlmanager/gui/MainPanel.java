@@ -2,6 +2,8 @@ package com.xyl.sqlmanager.gui;
 
 import com.xyl.sqlmanager.BaseSqlDriver;
 import com.xyl.sqlmanager.MySqlDriver;
+import com.xyl.sqlmanager.exception.CustomException;
+import com.xyl.sqlmanager.exception.ResponseEnum;
 import com.xyl.sqlmanager.util.TableHandler;
 
 import javax.swing.*;
@@ -26,30 +28,25 @@ public class MainPanel extends JFrame implements TreeSelectionListener {
      * @param e
      */
     @Override
-    public void valueChanged(TreeSelectionEvent e) {
+    public void valueChanged(TreeSelectionEvent e)  {
         TreePath path = leftProject.getSelectionPath();
-        try {
-            if (path == null)
-                return;
-            if (path.getPathCount() == 2) {//点击数据库更新JTree组件ui
-                DefaultMutableTreeNode treePath = (DefaultMutableTreeNode) path.getPath()[1];
-                seletedDb = treePath.getUserObject().toString();
-                mySqlDriver.useDataBase(connection, seletedDb);
-            }
-            if (path.getPathCount() == 3) {//点击表单更新JTableUI
-                myMouseListener.setEnable(true);//开启表格监听
-                insert.setEnabled(true);//启用插入功能
-                delete.setEnabled(true);//启用删除功能
-                DefaultMutableTreeNode treePath = (DefaultMutableTreeNode) path.getPath()[2];
-                seletedTable = treePath.getUserObject().toString();
-                List<String> columns = mySqlDriver.showTableColumnNames(connection,seletedTable);
-                List<Map<String,String>> lists = mySqlDriver.select(connection,seletedTable,null,columns);
-                //更新表格UI
-                TableHandler.updateTableColumn(table,tableModel,columns,lists);
-            }
+        if (path == null)
+            return;
+        if (path.getPathCount() == 2) {//点击数据库更新JTree组件ui
+            DefaultMutableTreeNode treePath = (DefaultMutableTreeNode) path.getPath()[1];
+            seletedDb = treePath.getUserObject().toString();
+            mySqlDriver.useDataBase(connection, seletedDb);
         }
-        catch (SQLException ex) {
-            ex.printStackTrace();
+        if (path.getPathCount() == 3) {//点击表单更新JTableUI
+            myMouseListener.setEnable(true);//开启表格监听
+            insert.setEnabled(true);//启用插入功能
+            delete.setEnabled(true);//启用删除功能
+            DefaultMutableTreeNode treePath = (DefaultMutableTreeNode) path.getPath()[2];
+            seletedTable = treePath.getUserObject().toString();
+            List<String> columns = mySqlDriver.showTableColumnNames(connection,seletedTable);
+            List<Map<String,String>> lists = mySqlDriver.select(connection,seletedTable,null,columns);
+            //更新表格UI
+            TableHandler.updateTableColumn(table,tableModel,columns,lists);
         }
     }
 
@@ -179,7 +176,7 @@ public class MainPanel extends JFrame implements TreeSelectionListener {
                     List<Map<String,String>> tempDatas = mySqlDriver.executeSql(connection,sql);
                     TableHandler.updateTableColumn(table,tableModel,tempDatas);
                 } catch (SQLException ex) {
-                    ex.printStackTrace();
+                    throw new CustomException(ResponseEnum.CUS_SQL_EXCEPTION.getCode(),ResponseEnum.CUS_SQL_EXCEPTION.getMes()+ex.getMessage());
                 }
             }
         });

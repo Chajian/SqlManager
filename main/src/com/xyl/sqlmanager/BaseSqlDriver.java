@@ -2,6 +2,8 @@ package com.xyl.sqlmanager;
 
 import com.mysql.cj.xdevapi.Result;
 import com.xyl.sqlmanager.db.SelectForest;
+import com.xyl.sqlmanager.exception.CustomException;
+import com.xyl.sqlmanager.exception.ResponseEnum;
 import com.xyl.sqlmanager.util.SqlStringUtil;
 
 import java.sql.*;
@@ -87,12 +89,18 @@ public class BaseSqlDriver implements SqlDriver {
     }
 
     @Override
-    public boolean useDataBase(Connection connection,String db) throws SQLException {
-        Statement statement = connection.createStatement();
-        String sql = "use "+db;
-        if(statement.execute(sql)){
-            return true;
+    public boolean useDataBase(Connection connection,String db) throws CustomException {
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            String sql = "use "+db;
+            if(statement.execute(sql)){
+                return true;
+            }
+        } catch (SQLException e) {
+            throw new CustomException(ResponseEnum.USE_DATA_EXCEPTION.getCode(),ResponseEnum.USE_DATA_EXCEPTION.getMes());
         }
+
         return false;
     }
 
@@ -127,18 +135,23 @@ public class BaseSqlDriver implements SqlDriver {
      * @throws SQLException
      */
     @Override
-    public List<String> showTableColumnNames(Connection connection, String tableName) throws SQLException {
-        Statement statement = connection.createStatement();
-        String sql = "describe "+tableName;
-        if (statement.execute(sql)) {
-            ResultSet resultSet = statement.getResultSet();
-            List<String> fields = new ArrayList<>();
-            while(resultSet.next()){
-                //获取table名
-                String feild = resultSet.getString(1);
-                fields.add(feild);
+    public List<String> showTableColumnNames(Connection connection, String tableName) throws CustomException {
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "describe " + tableName;
+            if (statement.execute(sql)) {
+                ResultSet resultSet = statement.getResultSet();
+                List<String> fields = new ArrayList<>();
+                while (resultSet.next()) {
+                    //获取table名
+                    String feild = resultSet.getString(1);
+                    fields.add(feild);
+                }
+                return fields;
             }
-            return fields;
+        }
+        catch (SQLException e){
+            throw new CustomException(ResponseEnum.DES_EXCEPTION.getCode(),ResponseEnum.DES_EXCEPTION.getMes()+e.getMessage());
         }
         return null;
     }
@@ -150,7 +163,7 @@ public class BaseSqlDriver implements SqlDriver {
      * @return
      * @throws SQLException
      */
-    public List<Map<String,String>> select(Connection connection, String tableName, Map<String,String> where, List<String> columns) throws SQLException {
+    public List<Map<String,String>> select(Connection connection, String tableName, Map<String,String> where, List<String> columns) {
 
         List<Map<String,String>> map = new ArrayList<>();
         SelectForest forest = new SelectForest();
@@ -168,16 +181,21 @@ public class BaseSqlDriver implements SqlDriver {
             forest.insertNode("from").insertLeft(tableName);
 //            forest.insertLeaf("from",tableName);
         }
-        Statement statement = connection.createStatement();
-        if(statement.execute(sql)){
-            ResultSet resultSet = statement.getResultSet();
-            while(resultSet.next()){
-                Map<String,String> item = new TreeMap<String, String>();
-                for(int i = 0 ; i < columns.size() ; i++){
-                    item.put(columns.get(i),resultSet.getString(columns.get(i)));
+        Statement statement = null;
+        try {
+            statement = connection.createStatement();
+            if(statement.execute(sql)){
+                ResultSet resultSet = statement.getResultSet();
+                while(resultSet.next()){
+                    Map<String,String> item = new TreeMap<String, String>();
+                    for(int i = 0 ; i < columns.size() ; i++){
+                        item.put(columns.get(i),resultSet.getString(columns.get(i)));
+                    }
+                    map.add(item);
                 }
-                map.add(item);
             }
+        } catch (SQLException e) {
+            throw new CustomException(ResponseEnum.SELECT_EXCEPTION.getCode(),ResponseEnum.SELECT_EXCEPTION.getMes()+e.getMessage());
         }
         return map;
     }
