@@ -107,10 +107,9 @@ public class CacheUtil {
      */
     public List<ConnectInfo> getConnectInfos(){
         List<ConnectInfo> connectInfos = new ArrayList<>();
-        File file = new File(path);
-        FileInputStream fileInputStream = null;
         try {
-            fileInputStream = new FileInputStream(file);
+            File file = readFile(path);
+            FileInputStream fileInputStream = new FileInputStream(file);
             byte[] bytes = new byte[32];
             Field[] fields = ConnectInfo.class.getFields();
             while(fileInputStream.available()>0){
@@ -148,9 +147,9 @@ public class CacheUtil {
      */
     public byte[] getConnectInfoBytes(){
         byte[] bytes = null;
-        File file = new File(path);
-        FileInputStream fileInputStream = null;
         try {
+            File file = readFile(path);
+            FileInputStream fileInputStream = null;
             fileInputStream = new FileInputStream(file);
             bytes = new byte[fileInputStream.available()];
             fileInputStream.read(bytes);
@@ -171,8 +170,8 @@ public class CacheUtil {
      * @return
      */
     public boolean updateConnectInfo(ConnectInfo connectInfo,int index){
-        File file = new File(path);
         try {
+            File file = readFile(path);
             byte[] allbytes = getConnectInfoBytes();
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             int skip = (index * ConnectInfo.class.getFields().length)*32;
@@ -214,8 +213,8 @@ public class CacheUtil {
      * @return
      */
     public ConnectInfo getConnectInfoByIndex(int index){
-        File file = new File(path);
         try {
+            File file = readFile(path);
             FileInputStream fileInputStream = new FileInputStream(file);
             int skip = (index * ConnectInfo.class.getFields().length)*32;
             fileInputStream.skip(skip);
@@ -241,5 +240,19 @@ public class CacheUtil {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * read file function
+     * @param path
+     * @return
+     */
+    public File readFile(String path) throws IOException {
+        File file = new File(path);
+        if(file.exists()){
+            return file;
+        }
+        file.createNewFile();
+        return file;
     }
 }
