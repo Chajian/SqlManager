@@ -1,6 +1,7 @@
 package com.xyl.sqlmanager.gui;
 
 import com.xyl.sqlmanager.MySqlDriver;
+import com.xyl.sqlmanager.SqlManagerContext;
 import com.xyl.sqlmanager.SqliteDriver;
 import com.xyl.sqlmanager.entity.ConnectInfo;
 import com.xyl.sqlmanager.exception.CustomException;
@@ -57,6 +58,7 @@ public class MyConnection extends JFrame {
         setFont(font);
         setVisible(true);
         setSize(1000,500);
+        SqlManagerContext.getSqlManagerContext().setCurFrame(this);
     }
 
     public static void main(String[] args) {
@@ -82,7 +84,6 @@ public class MyConnection extends JFrame {
                 ge.registerFont(font);
             }
             new MyConnection();
-
         }
         catch (Exception e){
             e.printStackTrace();

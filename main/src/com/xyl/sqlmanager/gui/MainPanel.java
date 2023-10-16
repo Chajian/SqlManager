@@ -2,6 +2,7 @@ package com.xyl.sqlmanager.gui;
 
 import com.xyl.sqlmanager.BaseSqlDriver;
 import com.xyl.sqlmanager.MySqlDriver;
+import com.xyl.sqlmanager.SqlManagerContext;
 import com.xyl.sqlmanager.exception.CustomException;
 import com.xyl.sqlmanager.exception.ResponseEnum;
 import com.xyl.sqlmanager.util.TableHandler;
@@ -196,6 +197,8 @@ public class MainPanel extends JFrame implements TreeSelectionListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         // 设置窗口可视（显示）
         this.setVisible(true);
+
+        SqlManagerContext.getSqlManagerContext().setCurFrame(this);
     }
 
 
