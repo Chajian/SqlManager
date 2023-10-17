@@ -38,7 +38,6 @@ public class MainPanel extends JFrame {
     JScrollPane spTable;
     BaseSqlDriver mySqlDriver;
     Connection connection;
-    MyMouseListener myMouseListener;
 
     JMenu operate;
     JMenuItem insert,delete;
@@ -124,7 +123,7 @@ public class MainPanel extends JFrame {
                 mySqlDriver.useDataBase(connection, seletedDb);
             }
             if (path.getPathCount() == 3) {//点击表单更新JTableUI
-                myMouseListener.setEnable(true);//开启表格监听
+                tableCard.setEnable(true);//开启表格监听
                 insert.setEnabled(true);//启用插入功能
                 delete.setEnabled(true);//启用删除功能
                 DefaultMutableTreeNode treePath = (DefaultMutableTreeNode) path.getPath()[2];
@@ -167,14 +166,12 @@ public class MainPanel extends JFrame {
         }
     }
 
-    class MyMouseListener implements MouseListener{
+    class TableCard extends Panel implements MouseListener{
         private int seletedRow = -1,seletedCol = -1;
         private Object value;
+        //是否插入
         boolean isInsert = false;
         boolean isEnable = true;
-
-        public MyMouseListener() {
-        }
 
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -259,8 +256,7 @@ public class MainPanel extends JFrame {
         public Object getValue() {
             return value;
         }
-    }
-    class TableCard extends Panel{
+
         public TableCard(){
             tableModel = new DefaultTableModel();
             table = new JTable(tableModel);
@@ -268,8 +264,8 @@ public class MainPanel extends JFrame {
             table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             // 创建一个滚动面板，包含表格
             spTable = new JScrollPane(table);
-            myMouseListener = new MyMouseListener();
-            table.addMouseListener(myMouseListener);
+            //table添加鼠标事件
+            table.addMouseListener(this);
         }
     }
 
@@ -282,7 +278,7 @@ public class MainPanel extends JFrame {
             delete.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    int row = myMouseListener.getSeletedRow();
+                    int row = tableCard.getSeletedRow();
                     if(row>=0){
 
                         //数据库操作
@@ -307,7 +303,7 @@ public class MainPanel extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     if(seletedTable!=null&&seletedDb!=null){
                         TableHandler.insertRow(table,tableModel,null);
-                        myMouseListener.isInsert = true;
+                        tableCard.isInsert = true;
                     }
                 }
             });
@@ -328,7 +324,7 @@ public class MainPanel extends JFrame {
             send.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    myMouseListener.setEnable(false);//关闭表格监听
+                    tableCard.setEnable(false);//关闭表格监听
                     insert.setEnabled(false);
                     delete.setEnabled(false);
                     try {
