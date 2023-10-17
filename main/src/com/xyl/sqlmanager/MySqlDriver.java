@@ -75,7 +75,7 @@ public class MySqlDriver extends BaseSqlDriver {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new CustomException(ResponseEnum.DRIVE_SQL_EXCEPTION.getCode(),ResponseEnum.DRIVE_SQL_EXCEPTION.getMes()+e.getMessage());
         }
 
         return map;
