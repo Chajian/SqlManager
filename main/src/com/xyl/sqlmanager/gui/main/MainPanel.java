@@ -1,22 +1,14 @@
 package com.xyl.sqlmanager.gui.main;
 
 import com.xyl.sqlmanager.BaseSqlDriver;
-import com.xyl.sqlmanager.MySqlDriver;
 import com.xyl.sqlmanager.SqlManagerContext;
-import com.xyl.sqlmanager.exception.CustomException;
-import com.xyl.sqlmanager.exception.ResponseEnum;
 import com.xyl.sqlmanager.util.TableHandler;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
@@ -41,26 +33,53 @@ public class MainPanel extends JFrame {
         // 创建根节点
         super("数据库");
         SqlManagerContext.getSqlManagerContext().setCurFrame(this);
-        setLayout(new BorderLayout());
+        setLayout(new GridBagLayout());
         this.mySqlDriver = mySqlDriver;
         treeDirectory = new TreeDirectoryCard();
         tableCard = new TableCard();
         jMenuBar = new MenuCard();
         inputCard = new InputCard();
-
         //添加菜单栏
         setJMenuBar(jMenuBar);
-        add(jMenuBar,BorderLayout.NORTH);
-        add(treeDirectory,BorderLayout.WEST);
+
+        setLayout(new GridBagLayout());
+        // 设置GridBagConstraints的属性
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.BOTH;
+        // 添加组件到容器
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 4;
+        constraints.weightx=1;
+        constraints.weighty=1;
+        add(treeDirectory,constraints);
+
+
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        constraints.gridwidth = 4;
+        constraints.gridheight = 4;
+        constraints.weightx=1;
+        constraints.weighty=1;
         // 将滚动面板添加到窗体中央
-        this.add(tableCard.spTable, BorderLayout.CENTER);
-        add(inputCard,BorderLayout.SOUTH);
+        add(tableCard.spTable, constraints);
+
+
+        constraints.gridx=1;
+        constraints.gridy=4;
+        constraints.gridheight=1;
+        constraints.gridwidth=4;
+        constraints.weightx=1;
+        constraints.weighty=1;
+        add(inputCard,constraints);
         // 设定窗口大小
         this.setSize(1200, 400);
         // 设定窗口左上角坐标（X轴200像素，Y轴100像素）
         this.setLocation(300, 200);
         // 设定窗口默认关闭方式为退出应用程序
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.pack();
         // 设置窗口可视（显示）
         this.setVisible(true);
     }
@@ -179,4 +198,3 @@ public class MainPanel extends JFrame {
 
 
 }
-
